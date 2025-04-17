@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculador de Promedios</title>
+  <meta charset="UTF-8">
+  <title>Simulador JS - Edward Guerrero</title>
 </head>
 <body>
-    <h1>Simulador: Calculador de Promedios</h1>
-    <p>
-        Este simulador permite calcular el promedio de calificaciones ingresadas por el usuario.
-        Además, determina si el usuario aprobó o no, según un promedio mínimo de aprobación.
-    </p>
-    <p>
-        Para interactuar con el simulador, abre la consola del navegador (F12) y sigue las instrucciones.
-    </p>
 
-    <script src="js/main.js"></script>
+  <h1>Gestor de productos</h1>
+
+  <section>
+    <h2>Agregar producto</h2>
+    <input type="text" id="nombre" placeholder="Nombre del producto" />
+    <input type="number" id="precio" placeholder="Precio" />
+    <select id="cuotas">
+        <option value="1">1 cuota</option>
+        <option value="3">3 cuotas</option>
+        <option value="6">6 cuotas</option>
+        <option value="12">12 cuotas</option>
+      </select>
+    <button id="agregarBtn">Agregar</button>
+  </section>
+
+  <section>
+    <h2>Productos Agregados</h2>
+    <ul id="lista-productos"></ul>
+  </section>
+
+  <section>
+    <h2>Opciones</h2>
+    <button id="guardarBtn">Guardar en LocalStorage</button>
+    <button id="cargarBtn">Cargar desde LocalStorage</button>
+    <button id="borrarBtn">Borrar Storage</button>
+  </section>
+
+  <script src="js/main.js"></script>
 </body>
 </html>

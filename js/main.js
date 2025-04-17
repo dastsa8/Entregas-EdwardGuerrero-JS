@@ -1,97 +1,99 @@
-// Array para almacenar las calificaciones
-const calificaciones = [];
+///////////////////////////////////////////////////////////////////////////////////////
 
-// Función para agregar calificaciones
-function agregarCalificacion() {
-    const calificacion = parseFloat(prompt("Ingresa una calificación (entre 0 y 10):"));
+//Hola! Gracias a sus recomendaciones cambie la idea de mi codigo, intentare
+//crear un gestor de productos para una tienda, se puede agregar un producto con
+//un nombre cualquiera y un precio cualquiera que sera dividido entre un numero de
+//cuotas predeterminado (1, 3, 6, 12) elegidas por el usuario, puede almacenar,
+//cargar y borrar los datos ingresados en el local storage, espero y les guste y cumpla
+//los requisitos necesarios! Gracias!!
 
-    // Validar que la calificación sea un número válido
-    if (isNaN(calificacion) || calificacion < 0 || calificacion > 10) {
-        alert("Por favor, ingresa un número válido entre 0 y 10.");
-        return;
+///////////////////////////////////////////////////////////////////////////////////////
+
+// funcion 1
+function Producto(nombre, precio, cuotas) {
+    this.nombre = nombre;
+    this.precio = parseFloat(precio);
+    this.cuotas = parseInt(cuotas);
+    this.totalCuota = function () {
+      return (this.precio / this.cuotas).toFixed(2);
+    };
+  }
+  
+  // dom acceso
+  let productos = [];
+  
+  const nombreInput = document.getElementById("nombre");
+  const precioInput = document.getElementById("precio");
+  const cuotasSelect = document.getElementById("cuotas");
+  const agregarBtn = document.getElementById("agregarBtn");
+  
+  const listaProductos = document.getElementById("lista-productos");
+  
+  const guardarBtn = document.getElementById("guardarBtn");
+  const cargarBtn = document.getElementById("cargarBtn");
+  const borrarBtn = document.getElementById("borrarBtn");
+
+  // funcion cuotas
+  function calcularCuotas(precio, cuotas) {
+    return (precio / cuotas).toFixed(2);
+  }
+  
+  // funcion agregar productos
+  function agregarProducto(nombre, precio, cuotas) {
+    const nuevoProducto = new Producto(nombre, precio, cuotas);
+    productos.push(nuevoProducto);
+    mostrarProductos(productos);
+  }
+  
+  // mostrar en dom
+  function mostrarProductos(array) {
+    listaProductos.innerHTML = ""; // Limpiar lista antes de renderizar
+  
+    for (const prod of array) {
+      const item = document.createElement("li");
+      item.innerHTML = `
+        <strong>${prod.nombre}</strong> - $${prod.precio} 
+        (${prod.cuotas} cuotas de $${prod.totalCuota()})
+      `;
+      listaProductos.appendChild(item);
     }
+  }
+  
+  agregarBtn.addEventListener("click", () => {
+    const nombre = nombreInput.value.trim();
+    const precio = precioInput.value;
+    const cuotas = cuotasSelect.value;
 
-    // Agregar la calificación al array
-    calificaciones.push(calificacion);
-    alert(`Calificación ${calificacion} agregada correctamente.`);
-    console.log("Calificaciones actuales:", calificaciones);
-}
-
-// Función para calcular el promedio
-function calcularPromedio() {
-    if (calificaciones.length === 0) {
-        alert("No hay calificaciones registradas. Agrega al menos una calificación.");
-        return;
+    if (nombre && precio && cuotas) {
+      agregarProducto(nombre, precio, cuotas);
+      nombreInput.value = "";
+      precioInput.value = "";
+      cuotasSelect.value = "6";
+    } else {
+      alert("Por favor completá todos los campos.");
     }
-
-    // Sumar todas las calificaciones
-    let suma = 0;
-    for (let i = 0; i < calificaciones.length; i++) {
-        suma += calificaciones[i];
+  });
+  
+  // guardar en local
+  guardarBtn.addEventListener("click", () => {
+    localStorage.setItem("productos", JSON.stringify(productos));
+    alert("Productos guardados correctamente.");
+  });
+  
+  // cargar desde local
+  cargarBtn.addEventListener("click", () => {
+    const data = localStorage.getItem("productos");
+    if (data) {
+      const objData = JSON.parse(data);
+      productos = objData.map(obj => new Producto(obj.nombre, obj.precio, obj.cuotas));
+      mostrarProductos(productos);
     }
-
-    // Calcular el promedio
-    const promedio = suma / calificaciones.length;
-    return promedio;
-}
-
-// Función para mostrar el resultado
-function mostrarResultado() {
-    const promedio = calcularPromedio();
-
-    if (promedio === undefined) {
-        return; // Si no hay calificaciones, no se muestra nada
-    }
-
-    // Determinar si el usuario aprobó o no
-    const promedioMinimo = 6; // Promedio mínimo para aprobar
-    const resultado = promedio >= promedioMinimo ? "Aprobado" : "Reprobado";
-
-    // Mostrar el resultado al usuario
-    const mensaje = `
-    === RESULTADO ===
-    Promedio: ${promedio.toFixed(2)}
-    Estado: ${resultado}
-    `;
-    alert(mensaje);
-    console.log(mensaje);
-}
-
-// Función principal para mostrar el menú
-function mostrarMenu() {
-    const opcion = prompt(`
-        Selecciona una opción:
-        1. Agregar calificación
-        2. Calcular promedio
-        3. Mostrar resultado
-        4. Salir
-    `);
-
-    switch (opcion) {
-        case "1":
-            agregarCalificacion();
-            break;
-        case "2":
-            const promedio = calcularPromedio();
-            if (promedio !== undefined) {
-                alert(`El promedio actual es: ${promedio.toFixed(2)}`);
-                console.log(`Promedio actual: ${promedio.toFixed(2)}`);
-            }
-            break;
-        case "3":
-            mostrarResultado();
-            break;
-        case "4":
-            alert("¡Gracias por usar el simulador!");
-            return;
-        default:
-            alert("Opción inválida. Por favor, selecciona una opción del menú.");
-    }
-
-    // Volver a mostrar el menú
-    mostrarMenu();
-}
-
-// Iniciar el simulador
-console.log("¡Bienvenido al Simulador de Promedios!");
-mostrarMenu();
+  });
+  
+  // borrar local
+  borrarBtn.addEventListener("click", () => {
+    localStorage.removeItem("productos");
+    productos = [];
+    mostrarProductos(productos);
+  });
+  
